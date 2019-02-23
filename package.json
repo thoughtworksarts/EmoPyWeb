@@ -1,0 +1,5 @@
+{
+  "name": "EmoPyWeb",
+  "description": "Testing a web interface for EmoPy.",
+  "image": "heroku/python"
+}
