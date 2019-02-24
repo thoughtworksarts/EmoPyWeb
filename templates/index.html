@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>EmoPyWeb</title>
+  </head>
+  <body>
+    <video autoplay playsinline></video>
+    <script type="text/javascript">
+      function hasGetUserMedia() {
+        return !!(navigator.mediaDevices &&
+          navigator.mediaDevices.getUserMedia);
+      }
+
+      if (hasGetUserMedia()) {
+        // Good to go!
+      } else {
+        alert('getUserMedia() is not supported by your browser');
+      }
+
+      var constraints = {
+        video: true
+      };
+
+      var video = document.querySelector('video');
+
+      function handleSuccess(stream) {
+        window.stream = stream; // only to make stream available to console
+        video.srcObject = stream;
+      }
+
+      function handleError(error) {
+        console.log('getUserMedia error: ', error);
+      }
+
+      navigator.mediaDevices.getUserMedia(constraints).
+        then(handleSuccess).catch(handleError);
+      </script>
+  </body>
+</html>
