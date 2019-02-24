@@ -3,9 +3,24 @@
   <head>
     <meta charset="utf-8">
     <title>EmoPyWeb</title>
+    <script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
   </head>
+  <style media="screen">
+    video { position: absolute; }
+    #emotion {
+      position: absolute;
+      background: black;
+      color: white;
+      padding: 10px;
+    }
+  </style>
   <body>
     <video autoplay playsinline></video>
+    <div id="emotion"></div>
+    <canvas style="display:none;"></canvas>
     <script type="text/javascript">
       function hasGetUserMedia() {
         return !!(navigator.mediaDevices &&
@@ -27,6 +42,7 @@
       function handleSuccess(stream) {
         window.stream = stream; // only to make stream available to console
         video.srcObject = stream;
+        predict();
       }
 
       function handleError(error) {
@@ -35,6 +51,26 @@
 
       navigator.mediaDevices.getUserMedia(constraints).
         then(handleSuccess).catch(handleError);
+
+      const canvas = document.createElement('canvas');
+
+
+      function predict() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        // Other browsers will fall back to image/png
+        dataURL = canvas.toDataURL();
+        $.ajax({
+          type: "POST",
+          url: "/predict",
+          data:{
+            image: dataURL
+          }
+        }).done(function(res) {
+          $('#emotion').text(res);
+        }).always(predict);
+      };
       </script>
   </body>
 </html>
