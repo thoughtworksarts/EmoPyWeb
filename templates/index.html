@@ -9,7 +9,12 @@
 			  crossorigin="anonymous"></script>
   </head>
   <style media="screen">
-    video { position: absolute; }
+    video { 
+      position: absolute;
+      transform: rotateY(180deg);
+      -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+      -moz-transform:rotateY(180deg); /* Firefox */ 
+    }
     #emotion {
       position: absolute;
       background: black;
