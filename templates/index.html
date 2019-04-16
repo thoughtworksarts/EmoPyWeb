@@ -9,11 +9,13 @@
 			  crossorigin="anonymous"></script>
   </head>
   <style media="screen">
-    video { 
+    canvas { 
       position: absolute;
       transform: rotateY(180deg);
       -webkit-transform:rotateY(180deg); /* Safari and Chrome */
       -moz-transform:rotateY(180deg); /* Firefox */ 
+      width: 640px;
+      height: 480px;
     }
     #emotion {
       position: absolute;
@@ -28,10 +30,11 @@
 
   </style>
   <body>
-    <video autoplay playsinline></video>
+    <video style="display: none;" autoplay playsinline></video>
     <div id="emotion"></div>
     <button type="button" onclick="saveImage()">Take Photo</button>
-    <canvas style="display:none;"></canvas>
+    <canvas id="canvas"></canvas>
+    <canvas id="overlay"></canvas>
     <script type="text/javascript">
       function hasGetUserMedia() {
         return !!(navigator.mediaDevices &&
@@ -63,13 +66,16 @@
       navigator.mediaDevices.getUserMedia(constraints).
         then(handleSuccess).catch(handleError);
 
-      const canvas = document.createElement('canvas');
-
+      const canvas = document.getElementById('canvas');
+      const overlay = document.getElementById('overlay');
+      overlay.width = 640; // currently only works when setting dimensions manually here instead of dynamically in loop below
+      overlay.height = 480;
 
       function predict() {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0);
+
         // Other browsers will fall back to image/png
         dataURL = canvas.toDataURL();
         $.ajax({
@@ -79,7 +85,18 @@
             image: dataURL
           }
         }).done(function(res) {
-          $('#emotion').text(res);
+          $('#emotion').text(res['emotion']);
+
+          overlayCtx = overlay.getContext('2d');
+          overlayCtx.clearRect(0, 0, overlay.width, overlay.height); // clears out previous rectangle(s)
+          overlayCtx.beginPath();
+          
+          // Loops through all sets of face coordinates and draws rectangle
+          JSON.parse(res['faces']).forEach(function(face) {
+            overlayCtx.rect(face[0], face[1], face[2], face[3]);
+            overlayCtx.stroke();
+          });
+
         }).always(predict);
       };
 

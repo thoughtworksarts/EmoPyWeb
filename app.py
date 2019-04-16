@@ -1,8 +1,8 @@
 import os
 
 from EmoPy import FERModel
-from EmoPy.src.face_detection import FaceDetector
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, json, jsonify
+from face_detector import FaceDetector
 import tensorflow as tf
 import keras
 
@@ -15,7 +15,7 @@ import numpy as np
 target_emotions = ['calm', 'anger', 'happiness']
 
 graph = tf.get_default_graph()
-model = FERModel(target_emotions, verbose=False, face_detector=FaceDetector('haarcascade_frontalface_default.xml'))
+model = FERModel(target_emotions, verbose=False)
 
 # Initialize application
 app = Flask(__name__)
@@ -31,7 +31,10 @@ def predict():
     # Passing the frame to the predictor
     with graph.as_default():
         emotion = model.predict_from_ndarray(image_np)
-    return emotion
+        faceDetector = FaceDetector('./haarcascade_frontalface_default.xml')
+        faces = faceDetector.detect_faces(image_np)
+        result = {'emotion': emotion, 'faces': json.dumps(faces.tolist())}
+    return jsonify(result)
 
 
 def data_uri_to_cv2_img(uri):
