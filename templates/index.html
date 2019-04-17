@@ -19,7 +19,6 @@
       <video style="display: none;" autoplay playsinline></video>
       <div id="emotion"></div>
       <canvas id="canvas"></canvas>
-      <canvas id="overlay" width="640" height="480"></canvas>
       <canvas id="emotionOverlay" width="640" height="480"></canvas>
       <div id="date"> April 20, 2019 Home Office Day, NYC</div>
       <img class="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
@@ -31,6 +30,7 @@
       <br/>open source license (AGPL).
     </p>
     <p>EmoPy and EmoPyWeb are projects of ThoughtWorks Arts</p>
+
     <script type="text/javascript">
       function hasGetUserMedia() {
         return !!(navigator.mediaDevices &&
@@ -63,10 +63,8 @@
         then(handleSuccess).catch(handleError);
 
       const canvas = document.getElementById('canvas');
-      const overlay = document.getElementById('overlay');
-      const emotion = document.getElementById('emotionOverlay');
-      overlayCtx = overlay.getContext('2d');
-      emotionCtx = emotion.getContext('2d');
+      const emotionOverlay = document.getElementById('emotionOverlay');
+      emotionCtx = emotionOverlay.getContext('2d');
 
       function predict() {
         canvas.width = video.videoWidth;
@@ -86,29 +84,26 @@
         }).always(predict);
       };
 
+
       function displayEmotion(emotionPrediction){
-        overlayCtx.clearRect(0, 0, overlay.width, overlay.height); // clears out previous rectangle(s)
-        overlayCtx.beginPath();
-        drawFaceOutlines(emotionPrediction['faces']);
-        drawEmotion(emotionPrediction['emotion']);
-      }
-
-      function drawFaceOutlines(faces){
-        JSON.parse(faces).forEach(function(face) {
-          overlayCtx.rect(face[0], face[1], face[2], face[3]);
-          overlayCtx.stroke();
-        }); 
-      }
-
-      function drawEmotion(emotion){
-        var img = new Image();
-        img.onload = function() {
-          emotionCtx.drawImage(img, 0, 0);
-        }
-        img.src = './static/' + emotion + '.png'
-
+        emotionCtx.clearRect(0, 0, emotionOverlay.width, emotionOverlay.height); // clears out previous rectangle(s)
+        emotionCtx.beginPath();
+        var emotion = emotionPrediction['emotion'];
+        JSON.parse(emotionPrediction['faces']).forEach(function(face) {
+          var img = new Image();
+          var emojiSize = 50;
+          img.onload = function() {
+            emotionCtx.drawImage(img, face[0] - emojiSize, face[1], emojiSize, emojiSize);
+            emotionCtx.drawImage(img, face[0] + face[2], face[1], emojiSize, emojiSize);
+            emotionCtx.drawImage(img, face[0] + face[2]/2 - emojiSize/2, face[1] - emojiSize, emojiSize, emojiSize);
+            emotionCtx.drawImage(img, face[0] + face[2] - emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
+            emotionCtx.drawImage(img, face[0] - face[2]/4 + emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
+          }
+          img.src = './static/' + emotion + '.png'
+          }); 
         $('#emotion').text(emotion);
       }
+
 
       function saveImage() {
         let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
