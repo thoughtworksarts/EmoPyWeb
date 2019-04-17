@@ -1,3 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
 body {
-    background: rgb(243, 243, 243)
+    background: rgb(243, 243, 243);
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
 }
+
+.logo {
+    height: 50px;
+}
+
+canvas { 
+    position: absolute;
+    transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */ 
+    width: 640px;
+    height: 480px;
+  }
+  #emotion {
+    position: absolute;
+    background: black;
+    color: white;
+    padding: 10px;
+  }
+  button { 
+    position: relative;
+    margin-top: 500px;
+  }
