@@ -35,8 +35,8 @@
     <div id="emotion"></div>
     <button type="button" onclick="saveImage()">Take Photo</button>
     <canvas id="canvas"></canvas>
-    <canvas id="overlay"></canvas>
-    <canvas id="emotionOverlay"></canvas>
+    <canvas id="overlay" width="640" height="480"></canvas>
+    <canvas id="emotionOverlay" width="640" height="480"></canvas>
     <script type="text/javascript">
       function hasGetUserMedia() {
         return !!(navigator.mediaDevices &&
@@ -71,10 +71,8 @@
       const canvas = document.getElementById('canvas');
       const overlay = document.getElementById('overlay');
       const emotion = document.getElementById('emotionOverlay');
-      overlay.width = 640; // currently only works when setting dimensions manually here instead of dynamically in loop below
-      overlay.height = 480;
-      emotion.width = 640; // currently only works when setting dimensions manually here instead of dynamically in loop below
-      emotion.height = 480;
+      overlayCtx = overlay.getContext('2d');
+      emotionCtx = emotion.getContext('2d');
 
       function predict() {
         canvas.width = video.videoWidth;
@@ -90,28 +88,33 @@
             image: dataURL
           }
         }).done(function(res) {
-          $('#emotion').text(res['emotion']);
-
-          overlayCtx = overlay.getContext('2d');
-          overlayCtx.clearRect(0, 0, overlay.width, overlay.height); // clears out previous rectangle(s)
-          overlayCtx.beginPath();
-
-          emotionCtx = emotion.getContext('2d');
-          
-          // Loops through all sets of face coordinates and draws rectangle
-          JSON.parse(res['faces']).forEach(function(face) {
-            overlayCtx.rect(face[0], face[1], face[2], face[3]);
-
-            var img = new Image();
-            img.onload = function() {
-                emotionCtx.drawImage(img, 0, 0);
-            }
-            img.src = './static/' + res['emotion'] + '.png'
-            overlayCtx.stroke();
-          });
-
+          displayEmotion(res);
         }).always(predict);
       };
+
+      function displayEmotion(emotionPrediction){
+        overlayCtx.clearRect(0, 0, overlay.width, overlay.height); // clears out previous rectangle(s)
+        overlayCtx.beginPath();
+        drawFaceOutlines(emotionPrediction['faces']);
+        drawEmotion(emotionPrediction['emotion']);
+      }
+
+      function drawFaceOutlines(faces){
+        JSON.parse(faces).forEach(function(face) {
+          overlayCtx.rect(face[0], face[1], face[2], face[3]);
+          overlayCtx.stroke();
+        }); 
+      }
+
+      function drawEmotion(emotion){
+        var img = new Image();
+        img.onload = function() {
+          emotionCtx.drawImage(img, 0, 0);
+        }
+        img.src = './static/' + emotion + '.png'
+
+        $('#emotion').text(emotion);
+      }
 
       function saveImage() {
         let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
