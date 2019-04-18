@@ -136,8 +136,19 @@
           polaroidCtx.drawImage(canvas, polaroidPadding, polaroidPadding);
           polaroidCtx.drawImage(emotionOverlay, polaroidPadding, polaroidPadding);
           let image = polaroidCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+          shareImage(polaroidCanvas.toDataURL('image/png'))
           window.location.href=image;
         }
+      }
+
+      function shareImage(imageURL) {
+        $.ajax({
+          type: "POST",
+          url: "/share",
+          data:{
+            image: imageURL
+          }
+        });
       }
 
       </script>

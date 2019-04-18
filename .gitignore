@@ -7,3 +7,5 @@ uploads/
 -.gitkeep
 .DS_Store
 venv/
+keys_and_tokens
+imageToSave.png

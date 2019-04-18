@@ -9,6 +9,8 @@ import keras
 import base64
 import cv2
 import numpy as np
+import twitter
+import configparser
 
 # Can choose other target emotions from the emotion subset defined in fermodel.py in src directory. The function
 # defined as `def _check_emotion_set_is_supported(self):`
@@ -24,10 +26,32 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/share', methods=['POST'])
+def share():
+    uri = request.values['image']
+    if not os.path.isfile('keys_and_tokens'):
+        print('No config file available')
+        return ''
+    encoded = uri.split(',')[1]
+    config = configparser.ConfigParser()
+    config.readfp(open(r'keys_and_tokens'))
+    consumer_key = config.get('twitter keys and tokens', 'api_key')
+    consumer_secret = config.get('twitter keys and tokens', 'api_secret_key')
+    access_token_key = config.get('twitter keys and tokens', 'access_token')
+    access_token_secret = config.get('twitter keys and tokens', 'access_token_secret')
+    config.get('twitter keys and tokens', 'access_token_secret')
+    api = twitter.Api(consumer_key=consumer_key,
+        consumer_secret=consumer_secret,
+        access_token_key=access_token_key,
+        access_token_secret=access_token_secret)
+    with open("imageToSave.png", "r+b") as fh:
+        fh.write(base64.b64decode(encoded))
+        api.PostUpdate('', media = fh)
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    image_np = data_uri_to_cv2_img(request.values['image'])
+    image_np = data_uri_to_cv2_img(request.values['image'])    
     # Passing the frame to the predictor
     with graph.as_default():
         emotion = model.predict_from_ndarray(image_np)
