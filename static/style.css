@@ -66,6 +66,14 @@ canvas {
   color: #827e7f;
   margin-bottom: 14px;
 }
+
 button { 
-  position: relative;
+  width: 200px;
+  height: 30px;
+  margin-top: 30px;
+  border: 1px solid #4e4b4b52;
+  border-radius: 7px;
+  background: #f3f3f3;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
 }
