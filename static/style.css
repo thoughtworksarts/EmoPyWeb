@@ -6,7 +6,7 @@ body {
     text-align: center;
 }
 
-.logo {
+#logo {
     height: 50px;
 }
 
@@ -20,7 +20,7 @@ canvas {
   top: 5%;
 }
 
-.card{
+#polaroid{
   position: relative;
   height: 700px;
   width: 700px;
@@ -29,7 +29,7 @@ canvas {
   box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
 }
 
-.card-footer {
+#polaroid-footer {
   position: absolute;
   bottom: 2%;
   left: 30%;

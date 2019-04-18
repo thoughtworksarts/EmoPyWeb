@@ -15,17 +15,17 @@
       Turn on your webcam.
       <br/> Start making smiling, surprised or disgust faces.
     </p>
-    <div class="card">
+    <div id="polaroid">
       <video style="display: none;" autoplay playsinline></video>
       <canvas id="canvas"></canvas>
       <canvas id="emotionOverlay" width="640" height="480"></canvas>
-      <div class="card-footer">
+      <div id="polaroid-footer">
         <div id="emotion"></div>
-      <div id="date"> April 20, 2019 Home Office Day, NYC</div>
-      <img class="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
+        <div id="date"> April 20, 2019 Home Office Day, NYC</div>
+        <img id="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
+      </div>
     </div>
-    </div>
-    <button type="button" onclick="saveImage()">Take Photo</button>
+    <button type="button" onclick="createAndSavePolaroid()">Take Photo</button>
     <p>EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression 
       <br/> Recognition (FER). It was initiated durring Karen Palmer residency with 
       <br/>ThoughtWorks Arts. The code is freely Available on GitHub ang released under an
@@ -86,7 +86,6 @@
         }).always(predict);
       };
 
-
       function displayEmotion(emotionPrediction){
         emotionCtx.clearRect(0, 0, emotionOverlay.width, emotionOverlay.height); // clears out previous rectangle(s)
         emotionCtx.beginPath();
@@ -106,11 +105,41 @@
         $('#emotion').text(emotion);
       }
 
-
-      function saveImage() {
-        let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        window.location.href=image;
+      function createAndSavePolaroid() {
+        var polaroidCanvas = document.createElement('canvas');
+        var polaroidCtx = polaroidCanvas.getContext('2d');
+        var polaroidDiv = document.getElementById('polaroid');
+        var polaroidFooterDiv = document.getElementById('polaroid-footer');
+        var emotionDiv = document.getElementById('emotion');
+        var dateDiv = document.getElementById('date');
+        var logoDiv = document.getElementById('logo');
+        const polaroidPadding = 30; // space between edge of polaroid and start of webcam
+        polaroidCanvas.width = polaroidDiv.offsetWidth;
+        polaroidCanvas.height = polaroidDiv.offsetHeight;
+        var polaroidFooterDivOffset = polaroidDiv.offsetHeight - polaroidFooterDiv.offsetHeight;
+        polaroidCtx.fillStyle = window.getComputedStyle(polaroidDiv).getPropertyValue('background-color');
+        polaroidCtx.fillRect(0, 0, polaroidCanvas.width, polaroidCanvas.height);
+        polaroidCtx.font = window.getComputedStyle(emotionDiv).getPropertyValue('font');
+        polaroidCtx.fillStyle = window.getComputedStyle(emotionDiv).getPropertyValue('color');
+        var emotionText = emotionDiv.textContent;
+        var emotionTextWidth = polaroidCtx.measureText(emotionText).width;
+        polaroidCtx.fillText(emotionText, (polaroidCanvas.width/2) - (emotionTextWidth/2), polaroidFooterDivOffset + 20);
+        polaroidCtx.font = window.getComputedStyle(dateDiv).getPropertyValue('font');
+        polaroidCtx.fillStyle = window.getComputedStyle(dateDiv).getPropertyValue('color');
+        var dateText = dateDiv.textContent;
+        var dateTextWidth = polaroidCtx.measureText(dateText).width;
+        polaroidCtx.fillText(dateText, (polaroidCanvas.width/2) - (dateTextWidth/2), polaroidFooterDivOffset + 60);
+        var logo = new Image();
+        logo.src = './static/twa-logo.png'
+        logo.onload = function() {
+          polaroidCtx.drawImage(logo, (polaroidCanvas.width/2) - ((this.width/3)/2), polaroidFooterDivOffset + 75, this.width/3, this.height/3);
+          polaroidCtx.drawImage(canvas, polaroidPadding, polaroidPadding);
+          polaroidCtx.drawImage(emotionOverlay, polaroidPadding, polaroidPadding);
+          let image = polaroidCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+          window.location.href=image;
+        }
       }
+
       </script>
   </body>
 </html>
