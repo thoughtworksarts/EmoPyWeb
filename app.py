@@ -44,7 +44,7 @@ def share():
         consumer_secret=consumer_secret,
         access_token_key=access_token_key,
         access_token_secret=access_token_secret)
-    with open("imageToSave.png", "r+b") as fh:
+    with open("imageToSave.png", "w+b") as fh:
         fh.write(base64.b64decode(encoded))
         api.PostUpdate('', media = fh)
 
