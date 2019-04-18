@@ -25,7 +25,12 @@
         <img id="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
       </div>
     </div>
+    <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet:</label>
+    <br>
+    @<input id="twitterUsername" name="twitterUsername" type="text"></input>
+    <br>
     <button type="button" onclick="createAndSavePolaroid()">Take Photo</button>
+    <br>
     <p class="explanation">EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression 
       <br/> Recognition (FER). It was initiated durring Karen Palmer residency with 
       <br/>ThoughtWorks Arts. The code is freely Available on GitHub ang released under an
@@ -136,17 +141,18 @@
           polaroidCtx.drawImage(canvas, polaroidPadding, polaroidPadding);
           polaroidCtx.drawImage(emotionOverlay, polaroidPadding, polaroidPadding);
           let image = polaroidCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
-          shareImage(polaroidCanvas.toDataURL('image/png'))
+          shareImage(polaroidCanvas.toDataURL('image/png'), document.getElementById('twitterUsername').value);
           window.location.href=image;
         }
       }
 
-      function shareImage(imageURL) {
+      function shareImage(imageURL, twitterUsername) {
         $.ajax({
           type: "POST",
           url: "/share",
           data:{
-            image: imageURL
+            image: imageURL,
+            username: twitterUsername
           }
         });
       }

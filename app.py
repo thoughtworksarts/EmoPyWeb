@@ -46,7 +46,8 @@ def share():
         access_token_secret=access_token_secret)
     with open("imageToSave.png", "w+b") as fh:
         fh.write(base64.b64decode(encoded))
-        api.PostUpdate('', media = fh)
+        api.PostUpdate('@' + request.values['username'] if request.values['username'] else '', media = fh)
+       
 
 
 @app.route('/predict', methods=['POST'])
