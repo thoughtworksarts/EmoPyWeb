@@ -77,3 +77,20 @@ button {
   font-family: 'Montserrat', sans-serif;
   cursor: pointer;
 }
+
+.explanation {
+  font-size: small;
+  color: #77746e;
+  font-weight: bolder;
+}
+
+h1 {
+  font-weight: bolder;
+  font-size: x-large;
+  color: #57595d;
+}
+
+.subtitle {
+  font-style: italic;
+  margin-bottom: 30px;
+}
