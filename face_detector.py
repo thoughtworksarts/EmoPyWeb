@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 class FaceDetector:
     def __init__(self, cascade_file, scale_factor=1.2, min_neighbors=5, min_size=(30, 30)):
@@ -9,12 +10,15 @@ class FaceDetector:
 
     def detect_faces(self, image):
         face_cascade = cv2.CascadeClassifier(self.cascade_file)
-        return face_cascade.detectMultiScale(
-            image,
-            scaleFactor=self.scale_factor,
-            minNeighbors=self.min_neighbors,
-            minSize=self.min_size
-        )
+        try:
+            return face_cascade.detectMultiScale(
+                image,
+                scaleFactor=self.scale_factor,
+                minNeighbors=self.min_neighbors,
+                minSize=self.min_size
+            )
+        except Exception:
+            return np.array([])
 
     def crop_face(self, image, target_dimensions, default_first=True):
         faces = self.detect_faces(image)
