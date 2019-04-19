@@ -20,11 +20,12 @@ canvas {
   top: 5%;
 }
 
-#polaroid{
+#polaroid {
+  float:left;
   position: relative;
   height: 700px;
   width: 700px;
-  margin-left: auto;
+  margin-left: 80px;
   margin-right: auto;
   margin-bottom: 30px;
   background: white;
@@ -69,14 +70,14 @@ canvas {
 }
 
 button { 
-  width: 200px;
-  height: 30px;
+  width: 300px;
+  height: 100px;
   margin-top: 30px;
   border: 1px solid #4e4b4b52;
   border-radius: 7px;
   background: #f3f3f3;
   font-family: 'Montserrat', sans-serif;
-  font-size: 16px;
+  font-size: 30px;
   cursor: pointer;
 }
 
