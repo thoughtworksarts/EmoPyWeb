@@ -55,10 +55,10 @@ def predict():
     image_np = data_uri_to_cv2_img(request.values['image'])    
     # Passing the frame to the predictor
     with graph.as_default():
+        faces = FaceDetector('./haarcascade_frontalface_default.xml').detect_faces(image_np)
         emotion = model.predict_from_ndarray(image_np)
-        faceDetector = FaceDetector('./haarcascade_frontalface_default.xml')
-        faces = faceDetector.detect_faces(image_np)
-        result = {'emotion': emotion, 'faces': json.dumps(faces.tolist())}
+        result = {'emotion': emotion, 'faces': json.dumps(faces.tolist())} \
+            if len(faces) > 0 else {'emotion': 'no face detected', 'faces': json.dumps([])}
     return jsonify(result)
 
 

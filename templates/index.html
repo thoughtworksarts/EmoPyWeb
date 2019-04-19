@@ -96,18 +96,21 @@
         emotionCtx.clearRect(0, 0, emotionOverlay.width, emotionOverlay.height); // clears out previous rectangle(s)
         emotionCtx.beginPath();
         var emotion = emotionPrediction['emotion'];
-        JSON.parse(emotionPrediction['faces']).forEach(function(face) {
-          var img = new Image();
-          var emojiSize = 50;
-          img.onload = function() {
-            emotionCtx.drawImage(img, face[0] - emojiSize, face[1], emojiSize, emojiSize);
-            emotionCtx.drawImage(img, face[0] + face[2], face[1], emojiSize, emojiSize);
-            emotionCtx.drawImage(img, face[0] + face[2]/2 - emojiSize/2, face[1] - emojiSize, emojiSize, emojiSize);
-            emotionCtx.drawImage(img, face[0] + face[2] - emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
-            emotionCtx.drawImage(img, face[0] - face[2]/4 + emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
-          }
-          img.src = './static/' + emotion + '.png'
-          }); 
+        var faces = JSON.parse(emotionPrediction['faces']);
+        if (faces.length > 0) {
+          faces.forEach(function(face) {
+            var img = new Image();
+            var emojiSize = 50;
+            img.onload = function() {
+              emotionCtx.drawImage(img, face[0] - emojiSize, face[1], emojiSize, emojiSize);
+              emotionCtx.drawImage(img, face[0] + face[2], face[1], emojiSize, emojiSize);
+              emotionCtx.drawImage(img, face[0] + face[2]/2 - emojiSize/2, face[1] - emojiSize, emojiSize, emojiSize);
+              emotionCtx.drawImage(img, face[0] + face[2] - emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
+              emotionCtx.drawImage(img, face[0] - face[2]/4 + emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
+            }
+            img.src = './static/' + emotion + '.png'
+            });
+        }
         $('#emotion').text(emotion);
       }
 
