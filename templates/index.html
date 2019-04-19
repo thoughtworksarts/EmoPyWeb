@@ -25,14 +25,15 @@
         <img id="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
       </div>
     </div>
-    <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet:</label>
+    <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from 
+      <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
     <br>
     @<input id="twitterUsername" name="twitterUsername" type="text"></input>
     <br>
-    <button type="button" onclick="createAndSavePolaroid()">Take Photo</button>
+    <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
     <br>
     <p class="explanation">EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression 
-      <br/> Recognition (FER). It was initiated during Karen Palmer residency with 
+      <br/> Recognition (FER). It was initiated during Karen Palmer's residency with 
       <br/>ThoughtWorks Arts. The code is freely Available on GitHub and released under an
       <br/>open source license (AGPL).
     </p>
