@@ -9,3 +9,4 @@ uploads/
 venv/
 keys_and_tokens
 imageToSave.png
+.vscode/
