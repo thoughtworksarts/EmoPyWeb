@@ -21,12 +21,10 @@ canvas {
 }
 
 #polaroid {
-  float:left;
   position: relative;
   height: 700px;
   width: 700px;
-  margin-left: 80px;
-  margin-right: auto;
+  margin: 0 auto;
   margin-bottom: 30px;
   background: white;
   box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
@@ -100,4 +98,20 @@ h1 {
 
 #twitterUsername {
   margin-top: 10px;
+}
+
+div.twitter-post {
+  width: 40%;
+  margin: 0 auto;
+}
+
+.grid-item1 { grid-area: main; }
+.grid-item2 { grid-area: right; }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'menu main main main right right';
+  grid-gap: 10px;
+  padding: 10px;
 }
