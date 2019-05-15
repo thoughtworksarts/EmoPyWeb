@@ -27,12 +27,15 @@
                 <img id="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
               </div>
             </div>
-            <div class="twitter-post">
-              <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from 
-                <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
-              @<input id="twitterUsername" name="twitterUsername" type="text"></input>
-              <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
-            </div>
+            {% if features.twitter %}
+              <div>{{features.twitter}}</div>
+              <div class="twitter-post">
+                <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from 
+                  <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
+                @<input id="twitterUsername" name="twitterUsername" type="text"></input>
+              </div>
+            {% endif %}
+            <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
             <p class="explanation">EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression 
               <br/> Recognition (FER). It was initiated during Karen Palmer's residency with 
               <br/>ThoughtWorks Arts. The code is freely Available on GitHub and released under an
@@ -40,18 +43,18 @@
             </p>
             <p class="explanation">EmoPy and EmoPyWeb are projects of ThoughtWorks Arts</p>
         </div>
-        <div class="grid-item2">
-            <a class="twitter-timeline" data-lang="en" data-width="300" data-theme="light" data-link-color="#2B7BB9" href="https://twitter.com/EmoPyWeb?ref_src=twsrc%5Etfw">Tweets by EmoPyWeb</a> 
-            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-        </div>
+        {% if features.twitter %}
+          <div class="grid-item2">
+              <a class="twitter-timeline" data-lang="en" data-width="300" data-theme="light" data-link-color="#2B7BB9" href="https://twitter.com/EmoPyWeb?ref_src=twsrc%5Etfw">Tweets by EmoPyWeb</a> 
+              <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          </div>
+        {% endif %}
         <canvas id="hue">hue</canvas>
     </div>
     <script src="{{ url_for('static', filename='qrcode.min.js') }}"></script>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
     <script type="text/javascript">
-      var albumBucketName = 'tw-arts-emopyweb';
-      var bucketRegion = 'us-east-1';
-      var IdentityPoolId = 'us-east-1:931276b4-c4e3-4c0d-b47b-697a3b54f969';
+      
       var s3;
       $.ajax({
           type: "GET",
