@@ -51,17 +51,22 @@
     <script type="text/javascript">
       var albumBucketName = 'tw-arts-emopyweb';
       var bucketRegion = 'us-east-1';
-      var IdentityPoolId = 'identity-pool-id';
-
-      AWS.config.region = bucketRegion;
-      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: IdentityPoolId
-      });
-
-      var s3 = new AWS.S3({
-        apiVersion: '2006-03-01',
-        params: {Bucket: albumBucketName}
-      });
+      var IdentityPoolId = 'us-east-1:931276b4-c4e3-4c0d-b47b-697a3b54f969';
+      var s3;
+      $.ajax({
+          type: "GET",
+          url: "/aws-config",
+        }).done(function(res) {
+          conf = JSON.parse(res);
+          AWS.config.region = conf.region;
+          AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: conf.identityPoolId
+          });
+          s3 = new AWS.S3({
+            apiVersion: '2006-03-01',
+            params: {Bucket: conf.bucketName}
+          });
+        })
     </script>
     
     <script type="text/javascript">
@@ -206,7 +211,6 @@
             });
           });
           shareImage(imagePng, document.getElementById('twitterUsername').value);
-          // window.location.href=imagePng.replace('image/png', 'image/octet-stream');
         }
       }
 

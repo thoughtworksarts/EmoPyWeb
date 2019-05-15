@@ -22,31 +22,36 @@ model = FERModel(target_emotions, verbose=False)
 # Initialize application
 app = Flask(__name__)
 face_detector = FaceDetector('haarcascade_frontalface_default.xml')
+config = configparser.ConfigParser()
 
 @app.route('/')
 def index():
+    if not os.path.isfile('keys_and_tokens'):
+        return 'No config file available'
     return render_template('index.html')
+
+
+@app.route('/aws-config', methods=['GET'])
+def aws_config():
+    config.read('keys_and_tokens')
+    return json.dumps({
+        'region': config['aws']['region'],
+        'bucketName': config.get('aws', 'bucket_name'),
+        'identityPoolId': config.get('aws', 'identity_pool_id')
+    })
 
 @app.route('/share', methods=['POST'])
 def share():
-    uri = request.values['image']
     if not os.path.isfile('keys_and_tokens'):
-        print('No config file available')
-        return ''
-    encoded = uri.split(',')[1]
+        return 'No config file available'
     config = configparser.ConfigParser()
     config.readfp(open(r'keys_and_tokens'))
-    consumer_key = config.get('twitter keys and tokens', 'api_key')
-    consumer_secret = config.get('twitter keys and tokens', 'api_secret_key')
-    access_token_key = config.get('twitter keys and tokens', 'access_token')
-    access_token_secret = config.get('twitter keys and tokens', 'access_token_secret')
-    config.get('twitter keys and tokens', 'access_token_secret')
-    api = twitter.Api(consumer_key=consumer_key,
-        consumer_secret=consumer_secret,
-        access_token_key=access_token_key,
-        access_token_secret=access_token_secret)
+    api = twitter.Api(consumer_key=config.get('twitter-keys-and-tokens', 'api_key'),
+        consumer_secret=config.get('twitter-keys-and-tokens', 'api_secret_key'),
+        access_token_key=config.get('twitter-keys-and-tokens', 'access_token'),
+        access_token_secret=config.get('twitter-keys-and-tokens', 'access_token_secret'))
     with open("imageToSave.png", "w+b") as fh:
-        fh.write(base64.b64decode(encoded))
+        fh.write(base64.b64decode(request.values['image'].split(',')[1]))
         api.PostUpdate('@' + request.values['username'] if request.values['username'] else '', media = fh)
        
 
