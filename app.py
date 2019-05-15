@@ -23,21 +23,19 @@ model = FERModel(target_emotions, verbose=False)
 app = Flask(__name__)
 face_detector = FaceDetector('haarcascade_frontalface_default.xml')
 config = configparser.ConfigParser()
+config.read('keys_and_tokens')
 
 @app.route('/')
 def index():
-    if not os.path.isfile('keys_and_tokens'):
-        return 'No config file available'
-    return render_template('index.html')
+    return render_template('index.html', twitter=bool(config['features']['twitter']))
 
 
 @app.route('/aws-config', methods=['GET'])
 def aws_config():
-    config.read('keys_and_tokens')
     return json.dumps({
         'region': config['aws']['region'],
-        'bucketName': config.get('aws', 'bucket_name'),
-        'identityPoolId': config.get('aws', 'identity_pool_id')
+        'bucketName': config['aws']['bucket_name'],
+        'identityPoolId': config['aws']['identity_pool_id']
     })
 
 @app.route('/share', methods=['POST'])
@@ -45,7 +43,6 @@ def share():
     if not os.path.isfile('keys_and_tokens'):
         return 'No config file available'
     config = configparser.ConfigParser()
-    config.readfp(open(r'keys_and_tokens'))
     api = twitter.Api(consumer_key=config.get('twitter-keys-and-tokens', 'api_key'),
         consumer_secret=config.get('twitter-keys-and-tokens', 'api_secret_key'),
         access_token_key=config.get('twitter-keys-and-tokens', 'access_token'),

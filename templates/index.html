@@ -27,8 +27,7 @@
                 <img id="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
               </div>
             </div>
-            {% if features.twitter %}
-              <div>{{features.twitter}}</div>
+            {% if twitter %}
               <div class="twitter-post">
                 <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from 
                   <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
@@ -43,7 +42,7 @@
             </p>
             <p class="explanation">EmoPy and EmoPyWeb are projects of ThoughtWorks Arts</p>
         </div>
-        {% if features.twitter %}
+        {% if twitter %}
           <div class="grid-item2">
               <a class="twitter-timeline" data-lang="en" data-width="300" data-theme="light" data-link-color="#2B7BB9" href="https://twitter.com/EmoPyWeb?ref_src=twsrc%5Etfw">Tweets by EmoPyWeb</a> 
               <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -54,7 +53,7 @@
     <script src="{{ url_for('static', filename='qrcode.min.js') }}"></script>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
     <script type="text/javascript">
-      
+    console.log('{{ twitter }}');
       var s3;
       $.ajax({
           type: "GET",
@@ -213,7 +212,9 @@
               console.log('success!');
             });
           });
-          shareImage(imagePng, document.getElementById('twitterUsername').value);
+          if('{{ twitter }}' == 'True') {
+            shareImage(imagePng, document.getElementById('twitterUsername').value);
+          }
         }
       }
 
