@@ -26,6 +26,8 @@ model = FERModel(target_emotions, verbose=False)
 app = Flask(__name__)
 face_detector = FaceDetector('haarcascade_frontalface_default.xml')
 config = configparser.ConfigParser()
+if not os.path.isfile('keys_and_tokens'):
+    raise ValueError('No config file available')
 config.read('keys_and_tokens')
 
 @app.route('/')
@@ -52,6 +54,7 @@ def share():
     with open("imageToSave.png", "w+b") as fh:
         fh.write(base64.b64decode(request.values['image'].split(',')[1]))
         api.PostUpdate('@' + request.values['username'] if request.values['username'] else '', media = fh)
+    return 'OK'
        
 
 
