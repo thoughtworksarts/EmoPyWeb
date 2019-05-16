@@ -3,6 +3,7 @@ import os
 from EmoPy import FERModel
 from flask import Flask, render_template, request, json, jsonify
 from face_detector import FaceDetector
+from PIL import Image
 import tensorflow as tf
 import keras
 
@@ -11,6 +12,8 @@ import cv2
 import numpy as np
 import twitter
 import configparser
+import datetime
+import time
 
 # Can choose other target emotions from the emotion subset defined in fermodel.py in src directory. The function
 # defined as `def _check_emotion_set_is_supported(self):`
@@ -42,7 +45,6 @@ def aws_config():
 def share():
     if not os.path.isfile('keys_and_tokens'):
         return 'No config file available'
-    config = configparser.ConfigParser()
     api = twitter.Api(consumer_key=config.get('twitter-keys-and-tokens', 'api_key'),
         consumer_secret=config.get('twitter-keys-and-tokens', 'api_secret_key'),
         access_token_key=config.get('twitter-keys-and-tokens', 'access_token'),
@@ -59,7 +61,12 @@ def predict():
     # Passing the frame to the predictor
     with graph.as_default():
         faces = face_detector.detect_faces(image_np)
-        emotion = model.predict_from_ndarray(image_np)
+        if len(faces) > 0:
+            arr_crop = image_np[faces[0][1]:faces[0][1]+faces[0][3], faces[0][0]:faces[0][0]+faces[0][2]] #refactor
+        else:
+            arr_crop = image_np
+        emotion = model.predict_from_ndarray(arr_crop)
+        debug_frame(image_np, emotion) 
         result = {'emotion': emotion, 'faces': json.dumps(faces)}
     return jsonify(result)
 
@@ -69,6 +76,14 @@ def data_uri_to_cv2_img(uri):
     nparr = np.fromstring(base64.b64decode(encoded_data), np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return img
+
+# saves frames and their detected emotion to debug folder
+def debug_frame(image, emotion):
+    ts = time.time()
+    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    img = Image.fromarray(image, 'RGB')
+    img.save('./debug/' + emotion + '-' + st + '.png')
+    # img.show()
 
 
 if __name__ == '__main__':
