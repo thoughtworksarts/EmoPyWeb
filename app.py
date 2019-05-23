@@ -11,6 +11,9 @@ import cv2
 import numpy as np
 import twitter
 import configparser
+import requests
+import aiohttp
+import asyncio
 
 # Can choose other target emotions from the emotion subset defined in fermodel.py in src directory. The function
 # defined as `def _check_emotion_set_is_supported(self):`
@@ -19,7 +22,7 @@ target_emotions = ['calm', 'anger', 'happiness']
 graph = tf.get_default_graph()
 model = FERModel(target_emotions, verbose=False)
 
-# Initialize application
+loop = asyncio.get_event_loop()
 app = Flask(__name__)
 face_detector = FaceDetector('haarcascade_frontalface_default.xml')
 config = configparser.ConfigParser()
@@ -63,13 +66,27 @@ def predict():
         result = {'emotion': emotion, 'faces': json.dumps(faces)}
     return jsonify(result)
 
+@app.route('/shorten-url', methods=['POST'])
+def shorten_url():
+    print(request.values['longUrl'])
+    return json.loads(loop.run_until_complete(post_shorten(request.values['longUrl'])))['link']
+
+async def post_shorten(long_url):
+    async with aiohttp.ClientSession() as session:
+        async with session.post('https://api-ssl.bitly.com/v4/shorten', json = {
+            'long_url': long_url
+        }, headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + config['bitly']['access_token']
+        }) as response:
+            return await response.text()
+
 
 def data_uri_to_cv2_img(uri):
     encoded_data = uri.split(',')[1]
     nparr = np.fromstring(base64.b64decode(encoded_data), np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return img
-
 
 if __name__ == '__main__':
     app.run()

@@ -6,8 +6,11 @@
     <script
 			  src="https://code.jquery.com/jquery-3.3.1.min.js"
 			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        crossorigin="anonymous">
+    </script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+    <script src="{{ url_for('static', filename='qrcode.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
     <div class="grid-container">
@@ -48,187 +51,8 @@
               <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
           </div>
         {% endif %}
-        <canvas id="hue">hue</canvas>
+        <canvas id="qrcode-img"></canvas>
     </div>
-    <script src="{{ url_for('static', filename='qrcode.min.js') }}"></script>
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
-    <script type="text/javascript">
-    console.log('{{ twitter }}');
-      var s3;
-      $.ajax({
-          type: "GET",
-          url: "/aws-config",
-        }).done(function(res) {
-          conf = JSON.parse(res);
-          AWS.config.region = conf.region;
-          AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: conf.identityPoolId
-          });
-          s3 = new AWS.S3({
-            apiVersion: '2006-03-01',
-            params: {Bucket: conf.bucketName}
-          });
-        })
-    </script>
-    
-    <script type="text/javascript">
-      function hasGetUserMedia() {
-        return !!(navigator.mediaDevices &&
-          navigator.mediaDevices.getUserMedia);
-      }
-
-      if (hasGetUserMedia()) {
-        // Good to go!
-      } else {
-        alert('getUserMedia() is not supported by your browser');
-      }
-
-      var constraints = {
-        video: true
-      };
-
-      var video = document.querySelector('video');
-
-      function handleSuccess(stream) {
-        window.stream = stream; // only to make stream available to console
-        video.srcObject = stream;
-        predict();
-      }
-
-      function handleError(error) {
-        console.log('getUserMedia error: ', error);
-      }
-
-      navigator.mediaDevices.getUserMedia(constraints).
-        then(handleSuccess).catch(handleError);
-
-      const canvas = document.getElementById('canvas');
-      const emotionOverlay = document.getElementById('emotionOverlay');
-      emotionCtx = emotionOverlay.getContext('2d');
-
-      function predict() {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-
-        // Other browsers will fall back to image/png
-        dataURL = canvas.toDataURL();
-        $.ajax({
-          type: "POST",
-          url: "/predict",
-          data:{
-            image: dataURL
-          }
-        }).done(function(res) {
-          displayEmotion(res);
-        }).always(predict);
-      };
-
-      function displayEmotion(emotionPrediction){
-        emotionCtx.clearRect(0, 0, emotionOverlay.width, emotionOverlay.height); // clears out previous rectangle(s)
-        emotionCtx.beginPath();
-        var emotion = emotionPrediction['emotion'];
-        var faces = JSON.parse(emotionPrediction['faces']);
-        if (faces.length > 0) {
-          faces.forEach(function(face) {
-            var img = new Image();
-            var emojiSize = 50;
-            img.onload = function() {
-              emotionCtx.drawImage(img, face[0] - emojiSize, face[1], emojiSize, emojiSize);
-              emotionCtx.drawImage(img, face[0] + face[2], face[1], emojiSize, emojiSize);
-              emotionCtx.drawImage(img, face[0] + face[2]/2 - emojiSize/2, face[1] - emojiSize, emojiSize, emojiSize);
-              emotionCtx.drawImage(img, face[0] + face[2] - emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
-              emotionCtx.drawImage(img, face[0] - face[2]/4 + emojiSize, face[1] - emojiSize / 1.5, emojiSize, emojiSize);
-            }
-            img.src = './static/' + emotion + '.png'
-            });
-        }
-        $('#emotion').text(emotion);
-      }
-
-      function dataURItoBlob(dataURI) {
-        var binary = atob(dataURI.split(',')[1]);
-        var array = [];
-        for(var i = 0; i < binary.length; i++) {
-            array.push(binary.charCodeAt(i));
-        }
-        return new Blob([new Uint8Array(array)], {type: 'image/png'});
-      }
-
-      function uuidv4() {
-        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        )
-      }
-
-      function createAndSavePolaroid() {
-        var polaroidCanvas = document.createElement('canvas');
-        var polaroidCtx = polaroidCanvas.getContext('2d');
-        var polaroidDiv = document.getElementById('polaroid');
-        var polaroidFooterDiv = document.getElementById('polaroid-footer');
-        var emotionDiv = document.getElementById('emotion');
-        var dateDiv = document.getElementById('date');
-        var logoDiv = document.getElementById('logo');
-        const polaroidPadding = 30; // space between edge of polaroid and start of webcam
-        polaroidCanvas.width = polaroidDiv.offsetWidth;
-        polaroidCanvas.height = polaroidDiv.offsetHeight;
-        var polaroidFooterDivOffset = polaroidDiv.offsetHeight - polaroidFooterDiv.offsetHeight;
-        polaroidCtx.fillStyle = window.getComputedStyle(polaroidDiv).getPropertyValue('background-color');
-        polaroidCtx.fillRect(0, 0, polaroidCanvas.width, polaroidCanvas.height);
-        polaroidCtx.font = window.getComputedStyle(emotionDiv).getPropertyValue('font');
-        polaroidCtx.fillStyle = window.getComputedStyle(emotionDiv).getPropertyValue('color');
-        var emotionText = emotionDiv.textContent;
-        var emotionTextWidth = polaroidCtx.measureText(emotionText).width;
-        polaroidCtx.fillText(emotionText, (polaroidCanvas.width/2) - (emotionTextWidth/2), polaroidFooterDivOffset + 20);
-        polaroidCtx.font = window.getComputedStyle(dateDiv).getPropertyValue('font');
-        polaroidCtx.fillStyle = window.getComputedStyle(dateDiv).getPropertyValue('color');
-        var dateText = dateDiv.textContent;
-        var dateTextWidth = polaroidCtx.measureText(dateText).width;
-        polaroidCtx.fillText(dateText, (polaroidCanvas.width/2) - (dateTextWidth/2), polaroidFooterDivOffset + 60);
-        var logo = new Image();
-        logo.src = './static/twa-logo.png'
-        logo.onload = function() {
-          polaroidCtx.drawImage(logo, (polaroidCanvas.width/2) - ((this.width/3)/2), polaroidFooterDivOffset + 75, this.width/3, this.height/3);
-          polaroidCtx.drawImage(canvas, polaroidPadding, polaroidPadding);
-          polaroidCtx.drawImage(emotionOverlay, polaroidPadding, polaroidPadding);
-          let imagePng = polaroidCanvas.toDataURL('image/png');
-          let imageKey = uuidv4() + '.png';
-          s3.upload({
-            Key: imageKey,
-            Body: dataURItoBlob(imagePng),
-          }, function(err, data) {
-            if (err) {
-              console.log(err, data)
-              return alert('There was an error uploading your photo: ', err, data);
-            }
-            alert('Successfully uploaded photo.');
-            const photoUrl = s3.getSignedUrl('getObject', {
-                Key: imageKey,
-                Expires: 86400
-            });
-            
-            QRCode.toCanvas(document.getElementById('hue'), photoUrl, function (error) {
-              if (error) console.error(error)
-              console.log('success!');
-            });
-          });
-          if('{{ twitter }}' == 'True') {
-            shareImage(imagePng, document.getElementById('twitterUsername').value);
-          }
-        }
-      }
-
-      function shareImage(imageURL, twitterUsername) {
-        $.ajax({
-          type: "POST",
-          url: "/share",
-          data:{
-            image: imageURL,
-            username: twitterUsername
-          }
-        });
-      }
-
-      </script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
   </body>
 </html>
