@@ -12,14 +12,11 @@ import cv2
 import numpy as np
 import twitter
 import configparser
-<<<<<<< HEAD
 import requests
 import aiohttp
 import asyncio
-=======
 import datetime
 import time
->>>>>>> c799f461c74cd0ee2aa1476f23ec267d1b1388fc
 
 # Can choose other target emotions from the emotion subset defined in fermodel.py in src directory. The function
 # defined as `def _check_emotion_set_is_supported(self):`
@@ -81,7 +78,6 @@ def predict():
 
 @app.route('/shorten-url', methods=['POST'])
 def shorten_url():
-    print(request.values['longUrl'])
     return json.loads(loop.run_until_complete(post_shorten(request.values['longUrl'])))['link']
 
 async def post_shorten(long_url):
@@ -101,8 +97,6 @@ def data_uri_to_cv2_img(uri):
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return img
 
-<<<<<<< HEAD
-=======
 # saves frames and their detected emotion to debug folder
 def debug_frame(image, emotion):
     ts = time.time()
@@ -111,7 +105,5 @@ def debug_frame(image, emotion):
     img.save('./debug/' + emotion + '-' + st + '.png')
     # img.show()
 
-
->>>>>>> c799f461c74cd0ee2aa1476f23ec267d1b1388fc
 if __name__ == '__main__':
     app.run()
