@@ -37,7 +37,11 @@
                 @<input id="twitterUsername" name="twitterUsername" type="text"></input>
               </div>
             {% endif %}
-            <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
+            <div id="autoshootmsg" style="display: none;">
+              <span>I will shoot you in </span>
+              <span id="timer"></span>
+            </div>
+            <button type="button" onclick="createAndSavePolaroid()">Take photo</button>
             <p class="explanation">EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression 
               <br/> Recognition (FER). It was initiated during Karen Palmer's residency with 
               <br/>ThoughtWorks Arts. The code is freely Available on GitHub and released under an
