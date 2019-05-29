@@ -105,6 +105,15 @@ function hasGetUserMedia() {
 
 var timer = null;
 
+var qrcode = new QRCode(document.getElementById("qrcode-img"), {
+    text: 'res',
+    width: 500,
+    height: 500,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+});
+
   function createAndSavePolaroid() {
     var timeto = 3; // time in seconds to capture
     var countdown = $("#timer").html(timeto);
@@ -169,9 +178,7 @@ var timer = null;
                                 longUrl: url
                             }
                         }).done(function(res) {
-                            QRCode.toCanvas(document.getElementById('qrcode-img'), res, function (error) {
-                                if (error) console.error(error)
-                            });
+                            qrcode.makeCode(res);
                         });
                     });
                 });
