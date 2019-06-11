@@ -13,13 +13,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
+    <div id="title">
+        <h1>EmoPy Web Demo</h1>
+        <p class="subtitle">
+          Turn on your webcam.
+          <br/> Start making smiling, surprised or disgust faces.
+        </p>
+    </div>
     <div class="grid-container">
-        <div class="grid-item1">
-            <h1>EmoPy Web Demo</h1>
-            <p class="subtitle">
-              Turn on your webcam.
-              <br/> Start making smiling, surprised or disgust faces.
-            </p>
+        <div class="grid-polaroid">
             <div id="polaroid">
               <video style="display: none;" autoplay playsinline></video>
               <canvas id="canvas"></canvas>
@@ -30,35 +32,39 @@
                 <img id="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
               </div>
             </div>
-            <div id="autoshootmsg" style="display: none;">
-              <span>I will shoot you in </span>
-              <span id="timer"></span>
+        </div>
+        <div class="grid-qr">
+          <div id="qr-container">
+            <div id="qr-img"></div>
+          </div>
+          <div id="autoshootmsg" style="display: none;">
+            <span>I will shoot you in </span>
+            <span id="timer"></span>
+          </div>
+          {% if twitter %}
+            <div class="twitter-post">
+              <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from
+                <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
+              @<input id="twitterUsername" name="twitterUsername" type="text"></input>
             </div>
-            {% if twitter %}
-              <div class="twitter-post">
-                <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from
-                  <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
-                @<input id="twitterUsername" name="twitterUsername" type="text"></input>
-              </div>
-            <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
-            {% else %}
-            <button type="button" onclick="createAndSavePolaroid()">Take photo</button>
-            {% endif %}
+          <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
+          {% else %}
+          <button type="button" onclick="createAndSavePolaroid()">Take photo</button>
+          {% endif %}
 
-            <p class="explanation">EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression
-              <br/> Recognition (FER). It was initiated during Karen Palmer's residency with
-              <br/>ThoughtWorks Arts. The code is freely Available on GitHub and released under an
-              <br/>open source license (AGPL).
-            </p>
-            <p class="explanation">EmoPy and EmoPyWeb are projects of ThoughtWorks Arts</p>
+          <p class="explanation">
+            EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression Recognition (FER). 
+            <br>It was initiated during Karen Palmer's residency with ThoughtWorks Arts.
+            <br>The code is freely Available on GitHub and released under an open source license (AGPL). 
+            <br>EmoPy and EmoPyWeb are projects of ThoughtWorks Arts.
+          </p>
         </div>
         {% if twitter %}
-          <div class="grid-item2">
-              <a class="twitter-timeline" data-lang="en" data-width="300" data-theme="light" data-link-color="#2B7BB9" href="https://twitter.com/EmoPyWeb?ref_src=twsrc%5Etfw">Tweets by EmoPyWeb</a>
-              <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-          </div>
+        <div>
+          <a class="twitter-timeline" data-lang="en" data-width="300" data-theme="light" data-link-color="#2B7BB9" href="https://twitter.com/EmoPyWeb?ref_src=twsrc%5Etfw">Tweets by EmoPyWeb</a>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
         {% endif %}
-        <div id="qrcode-img"></div>
     </div>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
   </body>

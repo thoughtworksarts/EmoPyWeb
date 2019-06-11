@@ -103,30 +103,31 @@ function hasGetUserMedia() {
   }
 
 
-var timer = null;
+var photoCountdown = null;
 
-var qrcode = new QRCode(document.getElementById("qrcode-img"), {
-    text: 'res',
+var qrcode = new QRCode(document.getElementById("qr-img"), {
+    text: '',
     width: 500,
     height: 500,
     colorDark : "#000000",
     colorLight : "#ffffff",
     correctLevel : QRCode.CorrectLevel.H
 });
+qrcode.clear();
 
   function createAndSavePolaroid() {
     var timeto = 3; // time in seconds to capture
     var countdown = $("#timer").html(timeto);
-    if (timer !== null) {
+    if (photoCountdown !== null) {
         // some logic here if autoshoot in progress and user click button again
     } else {
         $("#autoshootmsg").show();
-        timer = window.setInterval(function() {
+        photoCountdown = window.setInterval(function() {
             timeto--;
             countdown.html(timeto);
             if (timeto == 0) {
-                window.clearInterval(timer);
-                timer = null;
+                video.pause();
+                window.clearInterval(photoCountdown);
                 $("#autoshootmsg").hide();
                 var polaroidCanvas = document.createElement('canvas');
                 var polaroidCtx = polaroidCanvas.getContext('2d');
@@ -179,6 +180,17 @@ var qrcode = new QRCode(document.getElementById("qrcode-img"), {
                             }
                         }).done(function(res) {
                             qrcode.makeCode(res);
+                            $('#qr-img').show();
+                            var qrtimeto = 5;
+                            var qrCountdown = window.setInterval(function() {
+                              qrtimeto--;
+                              if (qrtimeto == 0) {
+                                window.clearInterval(qrCountdown);
+                                video.play();
+                                photoCountdown = null;
+                                $('#qr-img').hide();
+                              }
+                            }, 1000);
                         });
                     });
                 });

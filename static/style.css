@@ -79,10 +79,11 @@ button {
   cursor: pointer;
 }
 
-.explanation {
+p.explanation {
   font-size: small;
   color: #77746e;
   font-weight: bolder;
+  word-break: break-all;
 }
 
 h1 {
@@ -105,13 +106,23 @@ div.twitter-post {
   margin: 0 auto;
 }
 
-.grid-item1 { grid-area: main; }
-.grid-item2 { grid-area: right; }
+.grid-polaroid {
+  grid-area: main; 
+}
+.grid-qr { grid-area: right; }
 
 .grid-container {
   display: grid;
   grid-template-areas:
-    'menu main main main right right';
+    'main right';
   grid-gap: 10px;
   padding: 10px;
+}
+
+#qr-container {
+  height: 500px;
+}
+
+div#qr-img {
+  display: inline-block;
 }
