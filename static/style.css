@@ -10,7 +10,7 @@ body {
     height: 50px;
 }
 
-canvas { 
+.photoCanvas {
   transform: rotateY(180deg);
   -webkit-transform:rotateY(180deg); /* Safari and Chrome */
   -moz-transform:rotateY(180deg); /* Firefox */ 
@@ -34,6 +34,7 @@ canvas {
   position: absolute;
   bottom: 2%;
   left: 30%;
+  width: 300px;
 }
 
 #canvas {
@@ -67,16 +68,34 @@ canvas {
   margin-bottom: 14px;
 }
 
-button { 
-  width: 300px;
-  height: 100px;
-  margin-top: 30px;
-  border: 1px solid #4e4b4b52;
-  border-radius: 7px;
-  background: #f3f3f3;
+.roundRedButton {
+  width: 350px;
+  height: 350px;
+  background-color: #FE0001;
+  color: white;
+  border-radius: 50%;
   font-family: 'Montserrat', sans-serif;
   font-size: 30px;
   cursor: pointer;
+  /* box-shadow: 0 9px #999; */
+}
+
+.roundRedButton:hover {
+  background-color: #cb0000;
+}
+
+.roundRedButton:focus {
+  outline: none;
+}
+
+.roundRedButton:active {
+  background-color: #cb0000;
+  transform: translateY(-45%);
+}
+
+.roundRedButton:disabled {
+  background-color: #cb0000;
+  cursor: default;
 }
 
 p.explanation {
@@ -109,7 +128,9 @@ div.twitter-post {
 .grid-polaroid {
   grid-area: main; 
 }
-.grid-qr { grid-area: right; }
+.grid-qr {
+  grid-area: right; 
+}
 
 .grid-container {
   display: grid;
@@ -121,8 +142,17 @@ div.twitter-post {
 
 #qr-container {
   height: 500px;
+  margin: 50px 0;
+  position: relative;
 }
 
 div#qr-img {
   display: inline-block;
+}
+
+.vertical-center {
+  position: absolute;
+  top: 40%;
+  right: 25%;
+  transform: translateY(-50%);
 }

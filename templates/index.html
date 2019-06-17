@@ -19,13 +19,18 @@
           Turn on your webcam.
           <br/> Start making smiling, surprised or disgust faces.
         </p>
+        <p>
+          <i>
+            All photos will be deleted 24 hours after being taken.
+          </i>
+        </p>
     </div>
     <div class="grid-container">
         <div class="grid-polaroid">
             <div id="polaroid">
               <video style="display: none;" autoplay playsinline></video>
-              <canvas id="canvas"></canvas>
-              <canvas id="emotionOverlay" width="640" height="480"></canvas>
+              <canvas id="canvas" class="photoCanvas"></canvas>
+              <canvas id="emotionOverlay" class="photoCanvas" width="640" height="480"></canvas>
               <div id="polaroid-footer">
                 <div id="emotion"></div>
                 <div id="date"> April 19, 2019 Home Office Day, NYC</div>
@@ -36,22 +41,17 @@
         <div class="grid-qr">
           <div id="qr-container">
             <div id="qr-img"></div>
-          </div>
-          <div id="autoshootmsg" style="display: none;">
-            <span>I will shoot you in </span>
-            <span id="timer"></span>
-          </div>
-          {% if twitter %}
+            {% if twitter %}
             <div class="twitter-post">
               <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from
                 <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
               @<input id="twitterUsername" name="twitterUsername" type="text"></input>
             </div>
-          <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
-          {% else %}
-          <button type="button" onclick="createAndSavePolaroid()">Take photo</button>
-          {% endif %}
-
+            <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
+            {% else %}
+            <button id="cameraTrigger" class="roundRedButton vertical-center" type="button" onclick="createAndSavePolaroid()">Take photo</button>
+            {% endif %}
+          </div>
           <p class="explanation">
             EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression Recognition (FER). 
             <br>It was initiated during Karen Palmer's residency with ThoughtWorks Arts.
