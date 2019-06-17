@@ -104,6 +104,7 @@ function hasGetUserMedia() {
 
 
 var photoCountdown = null;
+var qrCountdown = null;
 
 var qrcode = new QRCode(document.getElementById("qr-img"), {
     text: '',
@@ -114,12 +115,21 @@ var qrcode = new QRCode(document.getElementById("qr-img"), {
     correctLevel : QRCode.CorrectLevel.H
 });
 qrcode.clear();
-var qrImage = $('#qr-img');
-qrImage.hide();
+var qrContainer = $('#qr-container');
+qrContainer.hide();
 var timeto = 3; // time in seconds to capture
+var trigger = $("#cameraTrigger");
+
+function newPhoto() {
+  window.clearInterval(qrCountdown);
+  video.play();
+  photoCountdown = null;
+  qrContainer.hide();
+  trigger.prop('disabled', false);
+  trigger.show();
+}
   
 function createAndSavePolaroid() {
-    var trigger = $("#cameraTrigger");
     trigger.html(timeto);
     trigger.prop('disabled', true);
     if (photoCountdown === null) {
@@ -183,17 +193,15 @@ function createAndSavePolaroid() {
                             }
                         }).done(function(res) {
                             qrcode.makeCode(res);
-                            qrImage.show();
-                            var qrtimeto = 5;
-                            var qrCountdown = window.setInterval(function() {
+                            qrContainer.show();
+                            var clearQrButton = $('#clear-qrcode');
+                            var qrtimeto = 15;
+                            clearQrButton.html("Click to take another photo, otherwise the QR code will dissapear in " + qrtimeto + " seconds");
+                            qrCountdown = window.setInterval(function() {
                               qrtimeto--;
+                              clearQrButton.html("Click to take another photo, otherwise the QR code will dissapear in " + qrtimeto + " seconds");
                               if (qrtimeto == 0) {
-                                window.clearInterval(qrCountdown);
-                                video.play();
-                                photoCountdown = null;
-                                qrImage.hide();
-                                trigger.prop('disabled', false);
-                                trigger.show();
+                                newPhoto();
                               }
                             }, 1000);
                         });

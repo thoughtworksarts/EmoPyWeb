@@ -39,17 +39,20 @@
             </div>
         </div>
         <div class="grid-qr">
-          <div id="qr-container">
-            <div id="qr-img"></div>
-            {% if twitter %}
-            <div class="twitter-post">
-              <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from
-                <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
-              @<input id="twitterUsername" name="twitterUsername" type="text"></input>
+          <div id="interaction">
+            <div id="qr-container">
+                <div id="qr-img"></div>
+                <button id="clear-qrcode" onclick="newPhoto()">Click to take another photo, otherwise the QR code will dissapear in 15 seconds</button>
             </div>
-            <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
-            {% else %}
-            <button id="cameraTrigger" class="roundRedButton vertical-center" type="button" onclick="createAndSavePolaroid()">Take photo</button>
+            {% if twitter %}
+              <div class="twitter-post">
+                <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from
+                  <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
+                @<input id="twitterUsername" name="twitterUsername" type="text"></input>
+              </div>
+              <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
+              {% else %}
+              <button id="cameraTrigger" class="roundRedButton vertical-center" type="button" onclick="createAndSavePolaroid()">Take photo</button>
             {% endif %}
           </div>
           <p class="explanation">
@@ -58,6 +61,7 @@
             <br>The code is freely Available on GitHub and released under an open source license (AGPL). 
             <br>EmoPy and EmoPyWeb are projects of ThoughtWorks Arts.
           </p>
+        </div>
         </div>
         {% if twitter %}
         <div>

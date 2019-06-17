@@ -140,13 +140,14 @@ div.twitter-post {
   padding: 10px;
 }
 
-#qr-container {
+#interaction {
   height: 500px;
   margin: 50px 0;
   position: relative;
 }
 
-div#qr-img {
+#qr-container {
+  width: 500px;
   display: inline-block;
 }
 

@@ -69,12 +69,11 @@ def predict():
         faces = face_detector.detect_faces(image_np)
         if len(faces) > 0:
             arr_crop = image_np[faces[0][1]:faces[0][1]+faces[0][3], faces[0][0]:faces[0][0]+faces[0][2]] #refactor
+            emotion = model.predict_from_ndarray(arr_crop)
+            debug_frame(image_np, emotion)
+            return jsonify({'emotion': emotion, 'faces': json.dumps(faces)})
         else:
-            arr_crop = image_np
-        emotion = model.predict_from_ndarray(arr_crop)
-        debug_frame(image_np, emotion) 
-        result = {'emotion': emotion, 'faces': json.dumps(faces)}
-    return jsonify(result)
+            return jsonify({'emotion': 'no faces detected', 'faces': json.dumps(faces)})
 
 @app.route('/shorten-url', methods=['POST'])
 def shorten_url():
@@ -82,12 +81,13 @@ def shorten_url():
 
 async def post_shorten(long_url):
     async with aiohttp.ClientSession() as session:
-        async with session.post('https://api-ssl.bitly.com/v4/shorten', json = {
-            'long_url': long_url
-        }, headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + config['bitly']['access_token']
-        }) as response:
+        async with session.post('https://api-ssl.bitly.com/v4/shorten', 
+            json = {
+                'long_url': long_url
+            }, headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + config['bitly']['access_token']
+            }) as response:
             return await response.text()
 
 
@@ -103,7 +103,6 @@ def debug_frame(image, emotion):
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     img = Image.fromarray(image, 'RGB')
     img.save('./debug/' + emotion + '-' + st + '.png')
-    # img.show()
 
 if __name__ == '__main__':
     app.run()
