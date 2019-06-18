@@ -46,8 +46,10 @@ function hasGetUserMedia() {
   const canvas = document.getElementById('canvas');
   const emotionOverlay = document.getElementById('emotionOverlay');
   emotionCtx = emotionOverlay.getContext('2d');
+  let isEmotion = true;
 
   function predict() {
+    if(!isEmotion) return;
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
@@ -121,6 +123,8 @@ var timeto = 3; // time in seconds to capture
 var trigger = $("#cameraTrigger");
 
 function newPhoto() {
+  isEmotion = true;
+  predict();
   window.clearInterval(qrCountdown);
   video.play();
   photoCountdown = null;
@@ -137,7 +141,8 @@ function createAndSavePolaroid() {
             timeto--;
             trigger.html(timeto);
             if (timeto == 0) {
-                trigger.html('Take Photo');
+              isEmotion = false;
+                trigger.html('Click here to take Photo');
                 trigger.hide();
                 video.pause();
                 window.clearInterval(photoCountdown);

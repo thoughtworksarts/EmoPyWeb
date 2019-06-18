@@ -90,7 +90,6 @@ body {
 
 .roundRedButton:active {
   background-color: #cb0000;
-  transform: translateY(-45%);
 }
 
 .roundRedButton:disabled {
