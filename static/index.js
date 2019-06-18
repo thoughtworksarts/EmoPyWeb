@@ -142,7 +142,7 @@ function createAndSavePolaroid() {
             trigger.html(timeto);
             if (timeto == 0) {
               isEmotion = false;
-                trigger.html('Click here to take Photo');
+                trigger.html('Click here to take a Photo');
                 trigger.hide();
                 video.pause();
                 window.clearInterval(photoCountdown);
