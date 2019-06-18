@@ -142,7 +142,7 @@ function createAndSavePolaroid() {
             trigger.html(timeto);
             if (timeto == 0) {
               isEmotion = false;
-                trigger.html('Click here to take a Photo');
+                trigger.html('Click here to take a photo');
                 trigger.hide();
                 video.pause();
                 window.clearInterval(photoCountdown);
@@ -180,10 +180,9 @@ function createAndSavePolaroid() {
                 s3.upload({
                     Key: imageKey,
                     Body: dataURItoBlob(imagePng),
+                    ContentType: 'image/png'
                 }, function(err, data) {
-                    if (err) {
-                    return alert('There was an error uploading your photo: ', err, data);
-                    }
+                    if (err) return alert('There was an error uploading your photo: ', err, data);
                     
                     s3.getSignedUrl('getObject', {
                         Key: imageKey,
@@ -197,6 +196,7 @@ function createAndSavePolaroid() {
                                 longUrl: url
                             }
                         }).done(function(res) {
+                            console.log(res);
                             qrcode.makeCode(res);
                             qrContainer.show();
                             var clearQrButton = $('#clear-qrcode');
