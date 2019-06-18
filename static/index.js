@@ -14,6 +14,15 @@ $.ajax({
     });
 })
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+function displayDate() {
+  n =  new Date();
+  document.getElementById('date').innerHTML = monthNames[n.getMonth()] + ' ' + n.getDate() + ', ' + n.getFullYear();
+}
+displayDate();
+
 function hasGetUserMedia() {
     return !!(navigator.mediaDevices &&
       navigator.mediaDevices.getUserMedia);
@@ -168,7 +177,9 @@ function createAndSavePolaroid() {
                 polaroidCtx.fillStyle = window.getComputedStyle(dateDiv).getPropertyValue('color');
                 var dateText = dateDiv.textContent;
                 var dateTextWidth = polaroidCtx.measureText(dateText).width;
-                polaroidCtx.fillText(dateText, (polaroidCanvas.width/2) - (dateTextWidth/2), polaroidFooterDivOffset + 60);
+                polaroidCtx.fillText(dateText, (polaroidCanvas.width/2) - (dateTextWidth/2), polaroidFooterDivOffset + 55);
+                var locationTextWidth = polaroidCtx.measureText(document.getElementById('location').textContent).width;
+                polaroidCtx.fillText(document.getElementById('location').textContent, (polaroidCanvas.width/2) - (locationTextWidth/2), polaroidFooterDivOffset + 75);
                 var logo = new Image();
                 logo.src = './static/twa-logo.png'
                 logo.onload = function() {

@@ -18,8 +18,7 @@
         <p class="subtitle">
           Turn on your webcam.
           <br/> Start making smiling, surprised or disgust faces.
-        </p>
-        <p>
+          <br/> 
           <i>
             All photos will be deleted 24 hours after being taken.
           </i>
@@ -33,7 +32,10 @@
               <canvas id="emotionOverlay" class="photoCanvas" width="640" height="480"></canvas>
               <div id="polaroid-footer">
                 <div id="emotion"></div>
-                <div id="date"> April 19, 2019 Home Office Day, NYC</div>
+                <div id="description">
+                  <p id="date"></p>
+                  <p id="location">Away Day - Dallas, TX</p>
+                </div>
                 <img id="logo" src="{{ url_for('static', filename='twa-logo.png') }}">
               </div>
             </div>
