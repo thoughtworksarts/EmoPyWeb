@@ -127,31 +127,39 @@ var qrcode = new QRCode(document.getElementById("qr-img"), {
 });
 qrcode.clear();
 var qrContainer = $('#qr-container');
-qrContainer.hide();
 var timeto = 3; // time in seconds to capture
-var trigger = $("#cameraTrigger");
+var trigger = $("#qr-description");
 
 function newPhoto() {
+  trigger.html('Start making happy, sad, fearful, angry, calm, surprised or disgusted faces. <br/>All photos will be deleted 24 hours after being taken.');
   isEmotion = true;
   predict();
   window.clearInterval(qrCountdown);
   video.play();
   photoCountdown = null;
   qrContainer.hide();
-  trigger.prop('disabled', false);
-  trigger.show();
+  qrDescription().show();
+}
+
+function qrDescription() {
+  return $("#qr-description");
+}
+
+function takePhoto() {
+  return $('#take-photo');
 }
   
 function createAndSavePolaroid() {
-    trigger.html(timeto);
-    trigger.prop('disabled', true);
-    if (photoCountdown === null) {
+  newPhoto();
+    trigger.html('<span style="font-size:100px;">'+timeto+'</span>');
+    takePhoto().prop('disabled', true);
         photoCountdown = window.setInterval(function() {
             timeto--;
-            trigger.html(timeto);
+            trigger.html('<span style="font-size:100px;">'+timeto+'</span>');
             if (timeto == 0) {
+              takePhoto().prop('disabled', false);
+              // takePhoto().html('Take ')
               isEmotion = false;
-                trigger.html('Click here to take a photo');
                 trigger.hide();
                 video.pause();
                 window.clearInterval(photoCountdown);
@@ -210,12 +218,12 @@ function createAndSavePolaroid() {
                             console.log(res);
                             qrcode.makeCode(res);
                             qrContainer.show();
-                            var clearQrButton = $('#clear-qrcode');
-                            var qrtimeto = 15;
-                            clearQrButton.html("Click to take another photo, otherwise the QR code will dissapear in " + qrtimeto + " seconds");
+                            var clearQrButton = $('#qr-disappear');
+                            var qrtimeto = 20;
+                            clearQrButton.html("QR code will disappear in " + qrtimeto + " seconds");
                             qrCountdown = window.setInterval(function() {
                               qrtimeto--;
-                              clearQrButton.html("Click to take another photo, otherwise the QR code will dissapear in " + qrtimeto + " seconds");
+                              clearQrButton.html("QR code will disappear in " + qrtimeto + " seconds");
                               if (qrtimeto == 0) {
                                 newPhoto();
                               }
@@ -228,7 +236,6 @@ function createAndSavePolaroid() {
                 }
             };
         }, 1000);
-    };
   }
 
   

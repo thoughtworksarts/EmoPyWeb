@@ -14,15 +14,7 @@
   </head>
   <body>
     <div id="title">
-        <h1>EmoPy Web Demo</h1>
-        <p class="subtitle">
-          Turn on your webcam.
-          <br/> Start making smiling, surprised or disgust faces.
-          <br/> 
-          <i>
-            All photos will be deleted 24 hours after being taken.
-          </i>
-        </p>
+        <h1>EmoPy</h1>
     </div>
     <div class="grid-container">
         <div class="grid-polaroid">
@@ -41,28 +33,25 @@
             </div>
         </div>
         <div class="grid-qr">
-          <div id="interaction">
-            <div id="qr-container">
-                <div id="qr-img"></div>
-                <button id="clear-qrcode" onclick="newPhoto()">Click to take another photo, otherwise the QR code will dissapear in 15 seconds</button>
-            </div>
-            {% if twitter %}
-              <div class="twitter-post">
-                <label for="twitterUsername">Enter your twitter username to tag yourself in the photo we tweet from
-                  <a target="_blank" href="https://twitter.com/EmoPyWeb">@EmoPyWeb</a>:</label>
-                @<input id="twitterUsername" name="twitterUsername" type="text"></input>
-              </div>
-              <button type="button" onclick="createAndSavePolaroid()">Tweet Photo Now</button>
-              {% else %}
-              <button id="cameraTrigger" class="roundRedButton vertical-center" type="button" onclick="createAndSavePolaroid()">Click here to take a photo</button>
-            {% endif %}
-          </div>
-          <p class="explanation">
-            EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression Recognition (FER). 
-            <br>It was initiated during Karen Palmer's residency with ThoughtWorks Arts.
-            <br>The code is freely Available on GitHub and released under an open source license (AGPL). 
-            <br>EmoPy and EmoPyWeb are projects of ThoughtWorks Arts.
-          </p>
+            <div id="qr-box">
+              <div id="two">
+                <div id="qr-container">
+                  <div id="save-qr">Scan QR code to save image</div>
+                  <div id="qr-img"></div>
+                  <div id="qr-disappear"style="">QR Code will disappear in 15 seconds</div>
+                </div>
+                <div id="qr-placeholder">
+                    <div id="qr-description">
+                      Start making happy, sad, fearful, angry, calm, surprised or disgusted faces.
+                      <br>All photos will be deleted 24 hours after being taken.
+                  </div>
+                </div>
+                <button id="take-photo" onclick="createAndSavePolaroid()">
+                  Take Photo
+                </button>
+        </div>
+        </div>
+        
         </div>
         </div>
         {% if twitter %}
@@ -71,6 +60,14 @@
           <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
         {% endif %}
+    </div>
+    <div>
+      <p class="explanation">
+        EmoPy is a deep neural net toolkit for emotion analysis via Facial Expression Recognition (FER). 
+        <br>It was initiated during Karen Palmer's residency with ThoughtWorks Arts.
+        <br>The code is freely Available on GitHub and released under an open source license (AGPL). 
+        <br>EmoPy and EmoPyWeb are projects of ThoughtWorks Arts.
+      </p>
     </div>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
   </body>
