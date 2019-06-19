@@ -14,6 +14,15 @@ $.ajax({
     });
 })
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+function displayDate() {
+  n =  new Date();
+  document.getElementById('date').innerHTML = monthNames[n.getMonth()] + ' ' + n.getDate() + ', ' + n.getFullYear();
+}
+displayDate();
+
 function hasGetUserMedia() {
     return !!(navigator.mediaDevices &&
       navigator.mediaDevices.getUserMedia);
@@ -142,7 +151,7 @@ function createAndSavePolaroid() {
             trigger.html(timeto);
             if (timeto == 0) {
               isEmotion = false;
-                trigger.html('Click here to take a Photo');
+                trigger.html('Click here to take a photo');
                 trigger.hide();
                 video.pause();
                 window.clearInterval(photoCountdown);
@@ -168,7 +177,9 @@ function createAndSavePolaroid() {
                 polaroidCtx.fillStyle = window.getComputedStyle(dateDiv).getPropertyValue('color');
                 var dateText = dateDiv.textContent;
                 var dateTextWidth = polaroidCtx.measureText(dateText).width;
-                polaroidCtx.fillText(dateText, (polaroidCanvas.width/2) - (dateTextWidth/2), polaroidFooterDivOffset + 60);
+                polaroidCtx.fillText(dateText, (polaroidCanvas.width/2) - (dateTextWidth/2), polaroidFooterDivOffset + 55);
+                var locationTextWidth = polaroidCtx.measureText(document.getElementById('location').textContent).width;
+                polaroidCtx.fillText(document.getElementById('location').textContent, (polaroidCanvas.width/2) - (locationTextWidth/2), polaroidFooterDivOffset + 75);
                 var logo = new Image();
                 logo.src = './static/twa-logo.png'
                 logo.onload = function() {
@@ -180,10 +191,9 @@ function createAndSavePolaroid() {
                 s3.upload({
                     Key: imageKey,
                     Body: dataURItoBlob(imagePng),
+                    ContentType: 'image/png'
                 }, function(err, data) {
-                    if (err) {
-                    return alert('There was an error uploading your photo: ', err, data);
-                    }
+                    if (err) return alert('There was an error uploading your photo: ', err, data);
                     
                     s3.getSignedUrl('getObject', {
                         Key: imageKey,
@@ -197,6 +207,7 @@ function createAndSavePolaroid() {
                                 longUrl: url
                             }
                         }).done(function(res) {
+                            console.log(res);
                             qrcode.makeCode(res);
                             qrContainer.show();
                             var clearQrButton = $('#clear-qrcode');

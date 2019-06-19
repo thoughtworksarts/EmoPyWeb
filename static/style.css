@@ -61,11 +61,15 @@ body {
   font-weight: 300;
 }
 
-#date {
+#description {
   font-size: 15px;
   font-weight: bolder;
   color: #827e7f;
   margin-bottom: 14px;
+}
+
+#description > p {
+  margin: 0;
 }
 
 .roundRedButton {
@@ -153,6 +157,6 @@ div.twitter-post {
 .vertical-center {
   position: absolute;
   top: 40%;
-  right: 25%;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

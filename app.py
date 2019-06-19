@@ -80,7 +80,7 @@ def shorten_url():
     return json.loads(loop.run_until_complete(post_shorten(request.values['longUrl'])))['link']
 
 async def post_shorten(long_url):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
         async with session.post('https://api-ssl.bitly.com/v4/shorten', 
             json = {
                 'long_url': long_url
