@@ -20,7 +20,7 @@ import time
 
 # Can choose other target emotions from the emotion subset defined in fermodel.py in src directory. The function
 # defined as `def _check_emotion_set_is_supported(self):`
-target_emotions = ['calm', 'anger', 'happiness']
+target_emotions = ['calm', 'anger', 'happiness', 'surprise', 'disgust', 'fear', 'sadness']
 
 graph = tf.get_default_graph()
 model = FERModel(target_emotions, verbose=False)
