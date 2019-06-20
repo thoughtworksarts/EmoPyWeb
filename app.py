@@ -73,7 +73,7 @@ def predict():
             debug_frame(image_np, emotion)
             return jsonify({'emotion': emotion, 'faces': json.dumps(faces)})
         else:
-            return jsonify({'emotion': 'no faces detected', 'faces': json.dumps(faces)})
+            return jsonify({'emotion': '', 'faces': json.dumps(faces)})
 
 @app.route('/shorten-url', methods=['POST'])
 def shorten_url():
