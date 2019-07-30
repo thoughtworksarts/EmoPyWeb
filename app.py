@@ -58,8 +58,16 @@ def share():
         fh.write(base64.b64decode(request.values['image'].split(',')[1]))
         api.PostUpdate('@' + request.values['username'] if request.values['username'] else '', media = fh)
     return 'OK'
-       
 
+def get_largest_face(faces):
+    largest_face = None
+    largest_face_area = 0
+    for face in faces:
+        (column, row, width, height) = face
+        if width*height > largest_face_area:
+            largest_face_area = width*height
+            largest_face = face
+    return largest_face
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -68,10 +76,11 @@ def predict():
     with graph.as_default():
         faces = face_detector.detect_faces(image_np)
         if len(faces) > 0:
-            arr_crop = image_np[faces[0][1]:faces[0][1]+faces[0][3], faces[0][0]:faces[0][0]+faces[0][2]] #refactor
+            largest_face = get_largest_face(faces)
+            arr_crop = image_np[largest_face[1]:largest_face[1]+largest_face[3], largest_face[0]:largest_face[0]+largest_face[2]]
             emotion = model.predict_from_ndarray(arr_crop)
             debug_frame(image_np, emotion)
-            return jsonify({'emotion': emotion, 'faces': json.dumps(faces)})
+            return jsonify({'emotion': emotion, 'faces': json.dumps([largest_face])})
         else:
             return jsonify({'emotion': '', 'faces': json.dumps(faces)})
 
