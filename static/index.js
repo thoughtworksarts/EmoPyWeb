@@ -58,11 +58,12 @@ const emotionOverlay = document.getElementById('emotionOverlay');
 emotionCtx = emotionOverlay.getContext('2d');
 
 let isEmotion = true;
-function createAndSavePolaroid() {
-  newPhoto();
+function startPhotoCountdown() {
+  prepareNewPhoto();
   trigger.html('<span style="font-size:100px;">'+timeto+'</span>');
   takePhoto().prop('disabled', true);
   photoCountdown = window.setInterval(function() {
+    console.log('photoCountdown ', timeto)
     timeto--;
     trigger.html('<span style="font-size:100px;">'+timeto+'</span>');
     if (timeto == 0) {
@@ -71,6 +72,24 @@ function createAndSavePolaroid() {
       timeto = 3;
     };
   }, 1000);
+}
+
+let photoCountdown = null;
+let qrCountdown = null;
+
+function prepareNewPhoto() {
+  window.clearInterval(qrCountdown);
+  console.log('qrCountdown is ', qrCountdown);
+
+  trigger.html('Start making happy, sad, fearful, angry, calm, surprised or disgusted faces. <br/>All photos will be deleted 24 hours after being taken.');
+  isEmotion = true;
+  
+  video.play();
+  predict();
+  
+  qrContainer.hide();
+  qrContainer.src = '#';
+  qrDescription().show();
 }
 
 function predict() {
@@ -154,11 +173,16 @@ function actuallyTakePhoto() {
           var clearQrButton = $('#qr-disappear');
           let qrtimeto = 20;
           clearQrButton.html("QR code will disappear in " + qrtimeto + " seconds");
+          console.log('qrCountdown is ', qrCountdown);
+          if(qrCountdown) {
+            window.clearInterval(qrCountdown);
+          }
           qrCountdown = window.setInterval(function() {
+            console.log('qrCountdown', qrtimeto);
             qrtimeto--;
             clearQrButton.html("QR code will disappear in " + qrtimeto + " seconds");
-            if (qrtimeto == 0) {
-              newPhoto();
+            if (qrtimeto <= 0) {
+              prepareNewPhoto();
             }
           }, 1000);
         });
@@ -208,10 +232,6 @@ function actuallyTakePhoto() {
     )
   }
 
-
-var photoCountdown = null;
-var qrCountdown = null;
-
 var qrcode = new QRCode(document.getElementById("qr-img"), {
     text: '',
     width: 500,
@@ -224,19 +244,6 @@ qrcode.clear();
 var qrContainer = $('#qr-container');
 var timeto = 3; // time in seconds to capture
 var trigger = $("#qr-description");
-
-function newPhoto() {
-  trigger.html('Start making happy, sad, fearful, angry, calm, surprised or disgusted faces. <br/>All photos will be deleted 24 hours after being taken.');
-  isEmotion = true;
-  predict();
-  window.clearInterval(qrCountdown);
-  video.play();
-  photoCountdown = null;
-  qrCountdown = null;
-  qrContainer.hide();
-  qrContainer.src = '#';
-  qrDescription().show();
-}
 
 function qrDescription() {
   return $("#qr-description");
