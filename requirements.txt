@@ -40,7 +40,7 @@ pytest==4.3.0
 python-dateutil==2.8.0
 python-twitter==3.5
 PyWavelets==1.0.1
-PyYAML==3.13
+PyYAML==5.4
 scikit-image==0.14.2
 scikit-learn==0.20.2
 scikit-neuralnetwork==0.7
