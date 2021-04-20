@@ -32,7 +32,7 @@ opencv-python==4.0.0.21
 Pillow==5.4.1
 pluggy==0.8.1
 protobuf==3.6.1
-py==1.8.0
+py==1.10.0
 pybase64==0.5.0
 pydot==1.4.1
 pyparsing==2.3.1
